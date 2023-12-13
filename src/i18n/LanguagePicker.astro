@@ -1,0 +1,82 @@
+---
+import DownArrow from "@/components/icons/DownArrow.astro";
+import {
+  getLangFromUrl,
+  locales,
+  useRoute,
+  type RouteTranslation,
+  type Locale,
+  getRouteKeyByPath,
+} from ".";
+import { cn } from "@/utils";
+const currentLang = getLangFromUrl(Astro.url);
+
+interface Props extends astroHTML.JSX.HTMLAttributes {}
+
+const { class: classes = "" } = Astro.props;
+
+const [, , ...currentPath] = Astro.url.pathname.split("/");
+
+const routeKey = getRouteKeyByPath(currentLang, currentPath.join("/")) || "/";
+---
+
+<div
+  id="i18n-language-picker"
+  aria-label="Language picker"
+  data-open="false"
+  class={cn(
+    "border-l border-white py-1.5 pl-6 uppercase font-poppins text-base leading-[22px] relative isolate bg-dark-1 px-1 focus-within:bg-brand-1 group/i18n text-white",
+    classes
+  )}
+>
+  <button
+    type="button"
+    class="flex items-center gap-1 i18n-toggle [&>*]:pointer-events-none w-max"
+  >
+    <span class="underline underline-offset-8 uppercase">{currentLang}</span>
+
+    <DownArrow
+      class="w-3.5 h-auto inline-block ml-1.5 group-data-[open='true']/i18n:rotate-180 transition-transform duration-200"
+    />
+  </button>
+
+  <ul
+    class="absolute transition-[max-height,opacity] duration-200 top-full space-y-2 mt-3 left-0 group-data-[open='false']/i18n:max-h-0 group-data-[open='true']/i18n:max-h-none overflow-hidden bg-dark-1 py-1 group-data-[open='true']/i18n:opacity-100 group-data-[open='false']/i18n:opacity-20 group-data-[open='false']/i18n:pointer-events-none pl-6"
+  >
+    {
+      Object.entries(locales).map(([lang, label]) => (
+        <li
+          class={cn(
+            "border-b last:border-none border-white/60",
+            lang === currentLang && "opacity-90"
+          )}
+        >
+          <a
+            href={useRoute(
+              lang as Locale,
+              true
+            )(routeKey as keyof RouteTranslation)}
+            class="hover:text-brand-1 transition-colors duration-200  hover:bg-white/5 w-full "
+          >
+            {lang}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<script define:vars={{ currentLang }}>
+  const i18nPicker = document.querySelector("#i18n-language-picker");
+
+  document.addEventListener("click", (e) => {
+    const isToggle = e.target.matches(".i18n-toggle");
+
+    if (isToggle) {
+      const isOpen = i18nPicker.dataset.open === "true";
+      i18nPicker.dataset.open = `${!isOpen}`;
+    } else {
+      i18nPicker.dataset.open = "false";
+    }
+  });
+</script>

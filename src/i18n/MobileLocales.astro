@@ -1,0 +1,28 @@
+---
+import { getLangFromUrl, locales } from ".";
+import { cn } from "@/utils";
+
+const currentLang = getLangFromUrl(Astro.url);
+
+const [, , ...currentPath] = Astro.url.pathname.split("/");
+
+interface Props extends astroHTML.JSX.HTMLAttributes {}
+
+const { class: classes = "" } = Astro.props;
+---
+
+<div class={cn("flex gap-6", classes)}>
+  {
+    Object.entries(locales).map(([lang, label]) => (
+      <a
+        href={`/${lang}/${currentPath.join("/")}`}
+        class={cn(
+          "border border-white  w-max  font-light text-xl text-center rounded px-2.5 py-2 block uppercase",
+          lang === currentLang ? "bg-white text-primary-4" : "text-white"
+        )}
+      >
+        {lang}
+      </a>
+    ))
+  }
+</div>
