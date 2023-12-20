@@ -29,26 +29,18 @@ const navLinks: Link[] = [
 ---
 
 <div class="border-b border-gray-200">
-  <nav class="flex justify-between items-center container py-2">
-    <a href={r("/")}>i18n</a>
+  <nav class="px-20 flex justify-between items-center file: py-3">
+    <a href={r("/")} class="font-bold">i18n</a>
     <ul class="flex gap-5 items-center">
       {
         navLinks.map((link) => (
           <li>
-            <a href={link.url}>{link.title}</a>
+            <a href={link.url} class="hover:text-gray-600 transition-colors ">
+              {link.title}
+            </a>
           </li>
         ))
       }
-      <!-- <li>
-        <a href={`/${lang}/`}>
-          {t.nav.home}
-        </a>
-      </li>
-      <li>
-        <a href={`/${lang}/about/`}>
-          {t.nav.about}
-        </a>
-      </li> -->
     </ul>
 
     <LanguagePicker />

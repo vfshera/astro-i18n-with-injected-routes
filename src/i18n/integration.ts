@@ -20,7 +20,7 @@ function getRouteTranslations(routePath: string, lang: Locale) {
 
   const routes = useRoutes(lang as Locale);
 
-  const translatedPath = routes?.[routePath as keyof RouteTranslation];
+  const translatedPath = routes?.[routePath as keyof RouteTranslation[Locale]];
 
   if (translatedPath) {
     return translatedPath;
