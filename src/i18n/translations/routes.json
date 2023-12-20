@@ -1,4 +1,10 @@
 {
-  "en": {},
-  "fr": {}
+  "en": {
+    "contact": "contact",
+    "about": "about"
+  },
+  "fr": {
+    "contact": "contact",
+    "about": "about"
+  }
 }
