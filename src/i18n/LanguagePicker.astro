@@ -3,10 +3,10 @@ import DownArrow from "@/components/icons/DownArrow.astro";
 import {
   getLangFromUrl,
   locales,
-  useRoute,
-  type RouteTranslation,
   type Locale,
-  getRouteKeyByPath,
+  getRouteFromUrl,
+  useTranslatedPath,
+  type RouteKey,
 } from ".";
 import { cn } from "@/utils";
 const currentLang = getLangFromUrl(Astro.url);
@@ -15,9 +15,9 @@ interface Props extends astroHTML.JSX.HTMLAttributes {}
 
 const { class: classes = "" } = Astro.props;
 
-const [, , ...currentPath] = Astro.url.pathname.split("/");
+const routeKey = getRouteFromUrl(Astro.url) || "";
 
-const routeKey = getRouteKeyByPath(currentLang, currentPath.join("/")) || "/";
+const r = useTranslatedPath(currentLang);
 ---
 
 <div
@@ -25,7 +25,7 @@ const routeKey = getRouteKeyByPath(currentLang, currentPath.join("/")) || "/";
   aria-label="Language picker"
   data-open="false"
   class={cn(
-    "border-l border-white py-1.5 pl-6 uppercase font-poppins text-base leading-[22px] relative isolate bg-dark-1 px-1 focus-within:bg-brand-1 group/i18n text-white",
+    "border border-gray-300 p-1 rounded uppercase font-poppins text-base leading-[22px] relative isolate bg-dark-1   focus-within:bg-brand-1 group/i18n text-gray-600",
     classes
   )}
 >
@@ -33,10 +33,10 @@ const routeKey = getRouteKeyByPath(currentLang, currentPath.join("/")) || "/";
     type="button"
     class="flex items-center gap-1 i18n-toggle [&>*]:pointer-events-none w-max"
   >
-    <span class="underline underline-offset-8 uppercase">{currentLang}</span>
+    <span class="uppercase">{currentLang}</span>
 
     <DownArrow
-      class="w-3.5 h-auto inline-block ml-1.5 group-data-[open='true']/i18n:rotate-180 transition-transform duration-200"
+      class="w-3.5 h-auto inline-block ml-1.5 fill-current group-data-[open='true']/i18n:rotate-180 transition-transform duration-200"
     />
   </button>
 
@@ -52,10 +52,7 @@ const routeKey = getRouteKeyByPath(currentLang, currentPath.join("/")) || "/";
           )}
         >
           <a
-            href={useRoute(
-              lang as Locale,
-              true
-            )(routeKey as keyof RouteTranslation)}
+            href={r(routeKey as RouteKey, lang as Locale)}
             class="hover:text-brand-1 transition-colors duration-200  hover:bg-white/5 w-full "
           >
             {lang}

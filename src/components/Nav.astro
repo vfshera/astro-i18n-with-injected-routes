@@ -1,24 +1,56 @@
 ---
-import { getLangFromUrl, useTranslation } from "@/i18n";
+import { getLangFromUrl, useTranslatedPath, useTranslation } from "@/i18n";
 import LanguagePicker from "@/i18n/LanguagePicker.astro";
 
 const lang = getLangFromUrl(Astro.url);
 const t = await useTranslation(lang);
+
+const r = useTranslatedPath(lang);
+
+type Link = {
+  title: string;
+  url: string;
+};
+
+const navLinks: Link[] = [
+  {
+    title: t.nav.home,
+    url: r("/"),
+  },
+  {
+    title: t.nav.about,
+    url: r("about"),
+  },
+  {
+    title: t.nav.contact,
+    url: r("contact"),
+  },
+];
 ---
 
-<nav>
-  <ul>
-    <li>
-      <a href={`/${lang}/`}>
-        {t.nav.home}
-      </a>
-    </li>
-    <li>
-      <a href={`/${lang}/about/`}>
-        {t.nav.about}
-      </a>
-    </li>
-  </ul>
+<div class="border-b border-gray-200">
+  <nav class="flex justify-between items-center container py-2">
+    <a href={r("/")}>i18n</a>
+    <ul class="flex gap-5 items-center">
+      {
+        navLinks.map((link) => (
+          <li>
+            <a href={link.url}>{link.title}</a>
+          </li>
+        ))
+      }
+      <!-- <li>
+        <a href={`/${lang}/`}>
+          {t.nav.home}
+        </a>
+      </li>
+      <li>
+        <a href={`/${lang}/about/`}>
+          {t.nav.about}
+        </a>
+      </li> -->
+    </ul>
 
-  <LanguagePicker />
-</nav>
+    <LanguagePicker />
+  </nav>
+</div>

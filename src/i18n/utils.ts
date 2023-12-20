@@ -1,6 +1,14 @@
-import { translations, type Locale, defaultLang } from "./config";
+import {
+  translations,
+  type Locale,
+  showDefaultLocale,
+  defaultLocale,
+} from "./config";
 
 import routes from "./translations/routes.json";
+
+export type RouteTranslation = typeof routes;
+export type RouteKey = keyof RouteTranslation[Locale];
 
 /**
  * Retrieves the language code from the URL path ie. Astro.url
@@ -8,54 +16,16 @@ import routes from "./translations/routes.json";
 export function getLangFromUrl(url: URL) {
   const [, lang] = url.pathname.split("/");
   if (lang in translations) return lang as Locale;
-  return defaultLang;
+  return defaultLocale;
 }
 
-/**
- *  Retrieves the route key from the provided path.
- */
-export function getRouteKeyByPath(lang: Locale, path: string) {
-  return Object.keys(routes[lang]).find((key) => {
-    return routes[lang]?.[key as keyof RouteTranslation] === path;
-  });
-}
 /**
  *  Retrieves the localized routes for the provided language locale.
  *
  */
-export function useRoutes(lang: Locale = defaultLang) {
+export function useRoutes(lang: Locale = defaultLocale) {
   return routes[lang];
 }
-
-/**
- * Generates a localized route based on the provided language locale and route name.
- *
- * @param {Locale} [lang=defaultLang] - The language locale for the route.
- * @param {boolean} [prefixed=false] - Determines whether the route should be prefixed with the language locale.
- * @returns {function} A higher-order function that takes a route name and returns a localized route.
- */
-export function useRoute(lang: Locale = defaultLang, prefixed = false) {
-  return function (routeName: keyof RouteTranslation) {
-    const rpath = routes[lang][routeName];
-
-    if ((routeName as string) === "/") {
-      return prefixed ? `/${lang}/` : "";
-    }
-
-    if (!rpath) {
-      console.log(`Route ${routeName} not found in routes.json`);
-
-      return routeName;
-    }
-
-    if (prefixed) {
-      return `/${lang}/${routes[lang][routeName]}`;
-    }
-    return "/" + routes[lang][routeName];
-  };
-}
-
-export type RouteTranslation = Awaited<ReturnType<typeof useRoutes>>;
 
 /**
  * Loads json translations
@@ -63,10 +33,87 @@ export type RouteTranslation = Awaited<ReturnType<typeof useRoutes>>;
 export const useTranslation = async (lang: Locale) => translations[lang]();
 
 /**
- *  translate paths
+ *  returns a path tranlation function
  */
 export function useTranslatedPath(lang: Locale) {
-  return (path: string, l: Locale = lang) => `/${l}${path}`;
+  /**
+   *  returns a path tranlation
+   */
+  return function (routeKey: RouteKey | "/", l: Locale = lang) {
+    /**
+     * if the routeKey is a wildcard or empty string
+     */
+
+    if ((routeKey as string) === "#" || (routeKey as string) === "") {
+      return routeKey;
+    }
+
+    /**
+     * if the routeKey is a root path
+     */
+    if (routeKey === "/") {
+      return !showDefaultLocale && l === defaultLocale ? "/" : `/${l}`;
+    }
+
+    const translatedPath = routes[l][routeKey as RouteKey];
+
+    if (!translatedPath) {
+      console.log(`[i18n]: ❌ key '${routeKey}' not found in routes.json`);
+
+      return routeKey;
+    }
+
+    return !showDefaultLocale && l === defaultLocale
+      ? "/" + translatedPath
+      : `/${l}/${translatedPath}`;
+  };
+}
+
+function getKeyByValue(
+  obj: Record<string, string>,
+  value: string
+): string | undefined {
+  return Object.keys(obj).find((key) => obj[key] === value);
+}
+
+export function getRouteFromUrl(url: URL): string | undefined {
+  const pathname = new URL(url).pathname;
+  const segments = pathname?.split("/");
+
+  if (segments[1] === "") {
+    return "/";
+  }
+
+  if (!Object.keys(routes).includes(segments[1]) && segments.length < 3) {
+    return segments[1];
+  }
+
+  if (segments.length < 3) {
+    return "/";
+  }
+
+  let path: string;
+
+  if (!Object.keys(routes).includes(segments[1]) && segments.length > 2) {
+    const [, ...pathSegments] = segments;
+    path = pathSegments.join("/");
+  } else {
+    const [, , ...pathSegments] = segments;
+    path = pathSegments.join("/");
+  }
+  if (path === undefined) {
+    return undefined;
+  }
+
+  const currentLang = getLangFromUrl(url);
+
+  const reversedKey = getKeyByValue(routes[currentLang], path);
+
+  if (reversedKey !== undefined) {
+    return reversedKey;
+  }
+
+  return undefined;
 }
 
 /**
