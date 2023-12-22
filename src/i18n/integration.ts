@@ -161,6 +161,7 @@ export function i18nRoutes(): AstroIntegration {
     hooks: {
       "astro:config:setup": async ({
         logger,
+        addWatchFile,
         injectRoute,
         config,
         command,
@@ -181,8 +182,9 @@ export function i18nRoutes(): AstroIntegration {
         fs.emptyDirSync(pagesDir);
         fs.emptyDirSync(tempPagesDir);
 
+        // addWatchFile(routesFile);
         /**
-         * Build mode only
+         * Build mode onlyDocum
          */
         if (command === "build") {
           logger.info("Loading routes...");
@@ -226,6 +228,20 @@ export function i18nRoutes(): AstroIntegration {
          * Dev mode only
          */
         if (command === "dev") {
+          const translationsDir = new URL("./i18n/translations", config.srcDir);
+
+          const translationFiles = fs.readdirSync(translationsDir);
+
+          translationFiles.forEach((filename) => {
+            const routesFile = new URL(
+              "./i18n/translations/" + filename,
+              config.srcDir
+            );
+            addWatchFile(routesFile);
+          });
+
+          logger.info("👀 Watching " + translationFiles.join(", "));
+
           logger.info("Generating routes...");
 
           const routePaths = generateUrl(routesDir);
