@@ -4,6 +4,7 @@ import {
   showDefaultLocale,
   defaultLocale,
 } from "./config";
+import { INTEGRATION_NAME } from "./constants";
 
 import routes from "./translations/routes.json";
 
@@ -58,7 +59,9 @@ export function useTranslatedPath(lang: Locale) {
     const translatedPath = routes[l][routeKey as RouteKey];
 
     if (!translatedPath) {
-      console.log(`[i18n]: ❌ key '${routeKey}' not found in routes.json`);
+      console.log(
+        `[${INTEGRATION_NAME}]: ❌ key '${routeKey}' not found in routes.json`
+      );
 
       return routeKey;
     }
@@ -162,7 +165,7 @@ export const interpolate = (
   // Check if reference string has HTML tags for interpolation
   if (!referenceStringMatches) {
     console.warn(
-      "WARNING(i18n): The default slot does not include any HTML tag to interpolate! Use the `t` function directly."
+      `WARNING(${INTEGRATION_NAME}): The default slot does not include any HTML tag to interpolate! Use the 't' directly.`
     );
     return localizedString;
   }
