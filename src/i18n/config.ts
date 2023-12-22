@@ -4,6 +4,8 @@
 export const locales = {
   en: "English",
   fr: "French",
+  es: "Spanish",
+  de: "German",
 };
 
 /**
@@ -27,6 +29,8 @@ export const clearTempPages = true;
 export const translations = {
   en: () => import("./translations/en.json").then((module) => module.default),
   fr: () => import("./translations/fr.json").then((module) => module.default),
+  es: () => import("./translations/es.json").then((module) => module.default),
+  de: () => import("./translations/de.json").then((module) => module.default),
 } as const;
 
 /**

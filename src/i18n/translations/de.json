@@ -1,0 +1,13 @@
+{
+  "welcome": {
+    "header": "Willkommen bei Astro",
+    "subhead": "Um loszulegen, öffnen Sie das Verzeichnis src/pages in Ihrem Projekt. Code-Herausforderung: Passen Sie die Nachricht \"Willkommen bei Astro\" oben an.",
+    "text_with_tags": "Hallo, <0/> Willkommen zu Hause!",
+    "interpolate": " Wie <0>großartig ist dieser</0> Text in der Zeile <1>Herausfinden</1>"
+  },
+  "nav": {
+    "home": "Startseite",
+    "contact": "Kontaktiere uns",
+    "about": "Über uns"
+  }
+}

@@ -182,7 +182,6 @@ export function i18nRoutes(): AstroIntegration {
         fs.emptyDirSync(pagesDir);
         fs.emptyDirSync(tempPagesDir);
 
-        // addWatchFile(routesFile);
         /**
          * Build mode onlyDocum
          */

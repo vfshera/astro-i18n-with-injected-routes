@@ -1,0 +1,13 @@
+{
+  "welcome": {
+    "header": "Bienvenido a Astro",
+    "subhead": "Para empezar, abre el directorio src/pages en tu proyecto. Desafío de código: Modifica el mensaje \"Bienvenido a Astro\" arriba.",
+    "text_with_tags": "Hola, <0/> ¡Bienvenido a casa!",
+    "interpolate": " ¿Qué <0>bien</0> es este texto en la línea <1>Descúbrelo</1>?"
+  },
+  "nav": {
+    "home": "Inicio",
+    "contact": "Contáctanos",
+    "about": "Sobre nosotros"
+  }
+}
