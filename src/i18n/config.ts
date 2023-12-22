@@ -11,7 +11,15 @@ export const locales = {
  */
 export const defaultLocale: Locale = "en";
 
+/**
+ * Whether the default language should be shown in the URL.
+ */
 export const showDefaultLocale = false;
+
+/**
+ *  Whether the temporary pages should be cleared after build.
+ */
+export const clearTempPages = true;
 
 /**
  * Translations object containing translations for different languages.
