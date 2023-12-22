@@ -178,14 +178,20 @@ export function i18nRoutes(): AstroIntegration {
             `[${INTEGRATION_NAME}]: ❌ Routes directory not found at '${routesDir}'`
           );
         }
-
+        /**
+         * clears pages directory
+         */
         fs.emptyDirSync(pagesDir);
-        fs.emptyDirSync(tempPagesDir);
 
         /**
          * Build mode onlyDocum
          */
         if (command === "build") {
+          /**
+           *  clears temp pages directory
+           */
+          fs.emptyDirSync(tempPagesDir);
+
           logger.info("Loading routes...");
 
           ["", ...Object.keys(locales)].forEach((lang) => {
