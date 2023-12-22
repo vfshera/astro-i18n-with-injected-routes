@@ -18,6 +18,12 @@ const { class: classes = "" } = Astro.props;
 const routeKey = getRouteFromUrl(Astro.url) || "";
 
 const r = useTranslatedPath(currentLang);
+
+const links = Object.entries(locales).map(([lang, label]) => ({
+  label,
+  lang,
+  href: r(routeKey as RouteKey, lang as Locale),
+}));
 ---
 
 <div
@@ -44,7 +50,7 @@ const r = useTranslatedPath(currentLang);
     class="absolute transition-[max-height,opacity] duration-200 top-full space-y-2 mt-3 left-0 group-data-[open='false']/i18n:max-h-0 group-data-[open='true']/i18n:max-h-none overflow-hidden bg-dark-1 py-1 group-data-[open='true']/i18n:opacity-100 group-data-[open='false']/i18n:opacity-20 group-data-[open='false']/i18n:pointer-events-none pl-6"
   >
     {
-      Object.entries(locales).map(([lang, label]) => (
+      links.map(({ lang, href }) => (
         <li
           class={cn(
             "border-b last:border-none border-white/60",
@@ -52,7 +58,7 @@ const r = useTranslatedPath(currentLang);
           )}
         >
           <a
-            href={r(routeKey as RouteKey, lang as Locale)}
+            href={href}
             class="hover:text-brand-1 transition-colors duration-200  hover:bg-white/5 w-full "
           >
             {lang}
